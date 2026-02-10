@@ -41,7 +41,7 @@ function GalleryView({ lang, seed, likes }) {
       }
     };
     fetchSongs();
-  }, [page, lang, seed, likes]);
+  }, [page, lang, seed, likes, API_URL]);
 
   // бесконечная прокрутка
   useEffect(() => {
