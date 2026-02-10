@@ -28,7 +28,7 @@ function TableView({ lang, seed, likes, songs, setSongs }) {
       });
     };
     fetchSongs();
-  }, [page, lang, seed, likes, setSongs]);
+  }, [page, lang, seed, likes, setSongs, API_URL]);
 
   return (
     <>
