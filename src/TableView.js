@@ -98,33 +98,25 @@ function TableView({ lang, seed, likes, songs, setSongs }) {
                               </p>
                             )}
 
-                            {song.audioPreview && song.audioPreview.length > 0 && (
-                              <audio
-                                controls
-                                src={`data:audio/wav;base64,${btoa(
-                                  String.fromCharCode(...song.audioPreview)
-                                )}`}
-                                style={{ width: "100%" }}
-                              />
+                            {getAudioSrc(song) && (
+                              <audio controls src={getAudioSrc(song)} style={{ width: "100%" }} />
                             )}
 
                             <div className="mb-2">
-                              <label
-                                htmlFor={`volume-${song.index}`}
-                                className="form-label"
-                              >
-                                <i className="fa-solid fa-volume-high"></i>                                  
-                                </label>
-                              <input
-                                type="range"
-                                className="form-range w-50"
-                                id={`volume-${song.index}`}
-                                min="0"
-                                max="100"
-                                value={volume}
-                                onChange={handleVolumeChange}
-                              />
-                            </div>
+  <label htmlFor={`volume-${song.index}`} className="form-label">
+    <i className="fa-solid fa-volume-high"></i> Volume
+  </label>
+  <input
+    type="range"
+    className="form-range w-50"
+    id={`volume-${song.index}`}
+    min="0"
+    max="100"
+    value={volume}
+    onChange={handleVolumeChange}
+  />
+</div>
+
                           </div>
                         </div>
                       </div>

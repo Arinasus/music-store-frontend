@@ -19,9 +19,27 @@ export function audioBytesToBase64(bytes) {
  * Возвращает готовый src для <audio>.
  */
 export function getAudioSrc(song) {
-  const base64 = audioBytesToBase64(song.audioPreview);
-  return base64 ? `data:audio/wav;base64,${base64}` : null;
+  if (!song.audioPreview) return null;
+
+  // если это уже строка base64
+  if (typeof song.audioPreview === "string") {
+    return `data:audio/wav;base64,${song.audioPreview}`;
+  }
+
+  // если это массив чисел
+  if (Array.isArray(song.audioPreview)) {
+    let binary = "";
+    const chunkSize = 0x8000;
+    for (let i = 0; i < song.audioPreview.length; i += chunkSize) {
+      const chunk = song.audioPreview.slice(i, i + chunkSize);
+      binary += String.fromCharCode.apply(null, chunk);
+    }
+    return `data:audio/wav;base64,${btoa(binary)}`;
+  }
+
+  return null;
 }
+
 
 /**
  * Возвращает готовый src для <img>.
