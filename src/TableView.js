@@ -37,7 +37,7 @@ function TableView({ lang, seed, likes, songs, setSongs }) {
     const newVolume = e.target.value;
     setVolume(newVolume);
     import("tone").then((Tone) => {
-      Tone.Destination.volume.value = (newVolume - 50) / 10;
+      Tone.Destination.volume.value = Tone.gainToDb(e.target.value / 100);
     });
   };
 
@@ -120,7 +120,7 @@ function TableView({ lang, seed, likes, songs, setSongs }) {
                               </label>
                               <input
                                 type="range"
-                                className="form-range"
+                                className="form-range w-50"
                                 id={`volume-${song.index}`}
                                 min="0"
                                 max="100"

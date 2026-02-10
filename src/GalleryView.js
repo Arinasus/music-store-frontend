@@ -65,7 +65,7 @@ function GalleryView({ lang, seed, likes }) {
     const newVolume = e.target.value;
     setVolume(newVolume);
     import("tone").then((Tone) => {
-      Tone.Destination.volume.value = (newVolume - 50) / 10;
+      Tone.Destination.volume.value = Tone.gainToDb(e.target.value / 100);
     });
   };
 
