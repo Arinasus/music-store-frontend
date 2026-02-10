@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { playSong, generateReview, generateCover, generateNotes } from "./utils";
+import { playSong, generateReview, generateCover} from "./utils";
 
 function TableView({ lang, seed, likes, songs, setSongs }) {
   const [covers, setCovers] = useState({});
   const [page, setPage] = useState(1);
   const [expandedSong, setExpandedSong] = useState(null);
 
-  const API_URL = "http://localhost:5161/api/songs";
+  const API_URL = process.env.REACT_APP_API_URL + "/songs";
     useEffect(() => { 
         setPage(1); // всегда возвращаемся на первую страницу 
         setExpandedSong(null); // закрываем раскрытые строки 
@@ -28,7 +28,7 @@ function TableView({ lang, seed, likes, songs, setSongs }) {
       });
     };
     fetchSongs();
-  }, [page, lang, seed, likes]);
+  }, [page, lang, seed, likes, setSongs]);
 
   return (
     <>

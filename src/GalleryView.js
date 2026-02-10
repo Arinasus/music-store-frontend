@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { playSong, generateReview, generateCover, generateNotes } from "./utils"; // используем общую функцию
+import { playSong, generateReview, generateCover } from "./utils"; // используем общую функцию
 
 function GalleryView({ lang, seed, likes }) {
   const [songs, setSongs] = useState([]);
