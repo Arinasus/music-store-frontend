@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { playSong, generateReview, generateCover } from "./utils";
+import { playSong, generateCover } from "./utils";
 import "@fortawesome/fontawesome-free/css/all.min.css"; // иконки Font Awesome
 
 const API_URL = process.env.REACT_APP_API_URL + "/songs";
