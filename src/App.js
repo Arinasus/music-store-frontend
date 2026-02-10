@@ -1,23 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import Toolbar from "./Toolbar";
+import TableView from "./TableView";
+import GalleryView from "./GalleryView";
 
 function App() {
+  const [viewMode, setViewMode] = useState("table");
+  const [lang, setLang] = useState("en");
+  const [seed, setSeed] = useState(12345);
+  const [likes, setLikes] = useState(3.7);
+  const [songs, setSongs] = useState([]);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ padding: "20px" }}>
+      <h1>🎵 Music Store Showcase</h1>
+
+      {/* Панель управления */}
+      <Toolbar
+        lang={lang}
+        setLang={setLang}
+        seed={seed}
+        setSeed={setSeed}
+        likes={likes}
+        setLikes={setLikes}
+        songs={songs}
+      />
+
+      {/* Переключение режимов */}
+      <div style={{ marginBottom: "20px" }}>
+        <button onClick={() => setViewMode("table")}>Table View</button>
+        <button onClick={() => setViewMode("gallery")}>Gallery View</button>
+      </div>
+
+      {viewMode === "table" ? (
+        <TableView key={`table-${seed}`} lang={lang} seed={seed} likes={likes} songs={songs} setSongs={setSongs}/>
+      ) : (
+        <GalleryView key={`gallery-${seed}`} lang={lang} seed={seed} likes={likes} songs={songs} setSongs={setSongs}/>
+      )}
     </div>
   );
 }
