@@ -11,7 +11,6 @@ function GalleryView({ lang, seed, likes }) {
   const [loading, setLoading] = useState(false);
   const [volume, setVolume] = useState(50);
 
-  // сброс при смене параметров
   useEffect(() => {
     setSongs([]);
     setCovers({});
@@ -19,7 +18,7 @@ function GalleryView({ lang, seed, likes }) {
     window.scrollTo(0, 0);
   }, [lang, seed, likes]);
 
-  // загрузка песен
+  // loading songs
   useEffect(() => {
     const fetchSongs = async () => {
       setLoading(true);
@@ -45,7 +44,7 @@ function GalleryView({ lang, seed, likes }) {
     fetchSongs();
   }, [page, lang, seed, likes]);
 
-  // бесконечная прокрутка
+  // scrolling
   useEffect(() => {
     const handleScroll = () => {
       if (
@@ -60,7 +59,7 @@ function GalleryView({ lang, seed, likes }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [loading]);
 
-  // изменение громкости
+  // change volume
   const handleVolumeChange = (e) => {
     const newVolume = e.target.value;
     setVolume(newVolume);
@@ -131,10 +130,6 @@ function GalleryView({ lang, seed, likes }) {
                     onChange={handleVolumeChange}
                   />
                 </div>
-
-                <p className="card-text mt-2 fst-italic">
-                  {generateReview()}
-                </p>
               </div>
             </div>
           </div>

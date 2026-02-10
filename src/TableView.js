@@ -128,9 +128,6 @@ function TableView({ lang, seed, likes, songs, setSongs }) {
                                 onChange={handleVolumeChange}
                               />
                             </div>
-                            <p className="card-text mt-2 fst-italic">
-                              {generateReview()}
-                            </p>
                           </div>
                         </div>
                       </div>

@@ -1,27 +1,35 @@
 import React from "react";
-import { generateNotes } from "./utils";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const API_URL = process.env.REACT_APP_API_URL + "/songs";
 
-function Toolbar({ lang, setLang, seed, setSeed, likes, setLikes, songs }) {
+function Toolbar({ lang, setLang, seed, setSeed, likes, setLikes }) {
   const generateRandomSeed = () => {
     const randomSeed = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
     setSeed(randomSeed);
   };
 
   const exportZip = async () => {
-    const songsWithNotes = songs.map((song) => ({
-      ...song,
-      notes: generateNotes(seed, song.index),
-    }));
+    // отправляем только параметры, сервер сам генерирует песни
+    const payload = {
+      page: 1,       // можно добавить управление страницей
+      lang,
+      seed,
+      likes,
+      count: 10
+    };
 
     const res = await fetch(`${API_URL}/exportZip`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(songsWithNotes),
+      body: JSON.stringify(payload),
     });
+
+    if (!res.ok) {
+      console.error("Export failed", res.statusText);
+      return;
+    }
 
     const blob = await res.blob();
     const url = window.URL.createObjectURL(blob);
@@ -34,7 +42,7 @@ function Toolbar({ lang, setLang, seed, setSeed, likes, setLikes, songs }) {
 
   return (
     <div className="d-flex align-items-center gap-3 mb-4">
-      {/* Язык */}
+      {/* Language */}
       <div>
         <label className="form-label me-2">
           <i className="fa-solid fa-language"></i>
@@ -46,7 +54,11 @@ function Toolbar({ lang, setLang, seed, setSeed, likes, setLikes, songs }) {
         >
           <option value="en">English (USA)</option>
           <option value="de">Deutsch (Germany)</option>
-          <option value="uk">Українська (Ukraine)</option>
+          <option value="fr">Français (France)</option>
+          <option value="it">Italiano (Italy)</option>
+          <option value="es">Español (Spain)</option>
+          <option value="pt">Português (Portugal)</option>
+          <option value="ar">العربية (Arabic)</option>
         </select>
       </div>
 

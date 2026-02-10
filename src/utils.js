@@ -1,7 +1,6 @@
-// utils.js
 import * as Tone from "tone";
 import seedrandom from "seedrandom";
-// 🎵 Проигрывание мелодии
+
 export function generateNotes(seed, index) {
   const rng = seedrandom(seed + "-" + index);
   const notes = ["C4", "D4", "E4", "F4", "G4", "A4", "B4"];
@@ -13,30 +12,9 @@ export function generateNotes(seed, index) {
   return sequence;
 }
 
-export function playSong(seed, index) {
-  Tone.start().then(() => {
-    const sequence = generateNotes(seed, index);
-    const synth = new Tone.Synth().toDestination();
-    let time = Tone.now();
-    sequence.forEach((note) => {
-      synth.triggerAttackRelease(note, "8n", time);
-      time += 0.5;
-    });
-  });
-}
+export function playSong(notes) { Tone.start().then(() => { const synth = new Tone.Synth().toDestination(); let time = Tone.now(); notes.forEach((note) => { synth.triggerAttackRelease(note, "8n", time); time += 0.5; }); }); }
 
-// 📝 Генерация случайного отзыва
-export function generateReview() {
-  const reviews = [
-"A refreshing sound with vibrant energy.", 
-"Melancholic yet captivating.", 
-"An upbeat track that lifts the mood.", 
-"Experimental and bold in style.", 
-"Smooth rhythm with catchy hooks."
-  ];
-  return reviews[Math.floor(Math.random() * reviews.length)];
-}
-// Генерация обложки через Canvas 
+// Generate Canvas 
 export function generateCover(song, idx, seed) { 
 return new Promise((resolve) => { 
     const canvas = document.createElement("canvas"); 
