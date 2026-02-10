@@ -11,8 +11,21 @@ export function generateNotes(seed, index) {
   }
   return sequence;
 }
+export function playSong(notes) {
+  if (!Array.isArray(notes)) {
+    console.error("Notes is not an array:", notes);
+    return;
+  }
 
-export function playSong(notes) { Tone.start().then(() => { const synth = new Tone.Synth().toDestination(); let time = Tone.now(); notes.forEach((note) => { synth.triggerAttackRelease(note, "8n", time); time += 0.5; }); }); }
+  Tone.start().then(() => {
+    const synth = new Tone.Synth().toDestination();
+    let time = Tone.now();
+    notes.forEach((note) => {
+      synth.triggerAttackRelease(note, "8n", time);
+      time += 0.5;
+    });
+  });
+}
 
 // Generate Canvas 
 export function generateCover(song, idx, seed) { 

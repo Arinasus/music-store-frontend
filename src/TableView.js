@@ -106,7 +106,7 @@ function TableView({ lang, seed, likes, songs, setSongs }) {
                               className="btn btn-primary mb-2"
                               onClick={() => {
                                 import("tone").then((Tone) => Tone.start());
-                                playSong(seed, song.index);
+                                playSong(song.notes);
                               }}
                             >
                               <i className="fa-solid fa-play"></i> Play

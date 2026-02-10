@@ -110,7 +110,7 @@ function GalleryView({ lang, seed, likes }) {
                   className="btn btn-primary w-100 mb-2"
                   onClick={() => {
                     import("tone").then((Tone) => Tone.start());
-                    playSong(seed, song.index);
+                   playSong(song.notes);
                   }}
                 >
                   <i className="fa-solid fa-play"></i> Play
