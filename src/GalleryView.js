@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { playSong, generateReview, generateCover } from "./utils";
+import "@fortawesome/fontawesome-free/css/all.min.css"; // иконки Font Awesome
+
+const API_URL = process.env.REACT_APP_API_URL + "/songs";
 
 function GalleryView({ lang, seed, likes }) {
   const [songs, setSongs] = useState([]);
   const [covers, setCovers] = useState({});
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
-
-  const API_URL = process.env.REACT_APP_API_URL + "/songs";
+  const [volume, setVolume] = useState(50);
 
   // сброс при смене параметров
   useEffect(() => {
@@ -41,7 +43,7 @@ function GalleryView({ lang, seed, likes }) {
       }
     };
     fetchSongs();
-  }, [page, lang, seed, likes, API_URL]);
+  }, [page, lang, seed, likes]);
 
   // бесконечная прокрутка
   useEffect(() => {
@@ -58,6 +60,15 @@ function GalleryView({ lang, seed, likes }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [loading]);
 
+  // изменение громкости
+  const handleVolumeChange = (e) => {
+    const newVolume = e.target.value;
+    setVolume(newVolume);
+    import("tone").then((Tone) => {
+      Tone.Destination.volume.value = (newVolume - 50) / 10;
+    });
+  };
+
   return (
     <div className="container mt-4">
       <div className="row g-4">
@@ -67,7 +78,10 @@ function GalleryView({ lang, seed, likes }) {
             key={`gallery-${song.index}-${page}-${seed}-${idx}`}
           >
             <div className="card h-100 shadow-sm">
-              <div className="card-img-top d-flex justify-content-center align-items-center" style={{ height: "180px" }}>
+              <div
+                className="card-img-top d-flex justify-content-center align-items-center"
+                style={{ height: "180px" }}
+              >
                 {covers[song.index] ? (
                   <img
                     src={covers[song.index]}
@@ -85,15 +99,39 @@ function GalleryView({ lang, seed, likes }) {
                 <p className="card-text"><b>Album:</b> {song.album}</p>
                 <p className="card-text"><b>Genre:</b> {song.genre}</p>
                 <p className="card-text"><b>Likes:</b> {song.likes}</p>
+                {song.duration && (
+                  <p className="card-text">
+                    <b>Duration:</b>{" "}
+                    {Math.floor(song.duration / 60)}:
+                    {String(song.duration % 60).padStart(2, "0")}
+                  </p>
+                )}
+
                 <button
-                  className="btn btn-primary w-100"
+                  className="btn btn-primary w-100 mb-2"
                   onClick={() => {
                     import("tone").then((Tone) => Tone.start());
                     playSong(seed, song.index);
                   }}
                 >
-                  ▶️ Play
+                  <i className="fa-solid fa-play"></i> Play
                 </button>
+
+                <div className="mb-2">
+                  <label htmlFor={`volume-${song.index}`} className="form-label">
+                    <i className="fa-solid fa-volume-high"></i> Volume
+                  </label>
+                  <input
+                    type="range"
+                    className="form-range"
+                    id={`volume-${song.index}`}
+                    min="0"
+                    max="100"
+                    value={volume}
+                    onChange={handleVolumeChange}
+                  />
+                </div>
+
                 <p className="card-text mt-2 fst-italic">
                   {generateReview()}
                 </p>
