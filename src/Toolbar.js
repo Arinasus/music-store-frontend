@@ -48,18 +48,14 @@ function Toolbar({ lang, setLang, seed, setSeed, likes, setLikes }) {
           <i className="fa-solid fa-language"></i>
         </label>
         <select
-          className="form-select"
-          value={lang}
-          onChange={(e) => setLang(e.target.value)}
-        >
-          <option value="en">English (USA)</option>
-          <option value="de">Deutsch (Germany)</option>
-          <option value="fr">Français (France)</option>
-          <option value="it">Italiano (Italy)</option>
-          <option value="es">Español (Spain)</option>
-          <option value="pt">Português (Portugal)</option>
-          <option value="ar">العربية (Arabic)</option>
-        </select>
+  className="form-select"
+  value={lang}
+  onChange={(e) => setLang(e.target.value)}
+>
+  <option value="en_US">English (USA)</option>
+  <option value="de_DE">Deutsch (Germany)</option>
+  <option value="uk_UA">Українська (Ukraine)</option>
+</select>
       </div>
 
       {/* Seed */}

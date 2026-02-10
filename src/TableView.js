@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { playSong, generateCover } from "./utils";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-
 const API_URL = process.env.REACT_APP_API_URL + "/songs";
 
 function TableView({ lang, seed, likes, songs, setSongs }) {
-  const [covers, setCovers] = useState({});
   const [page, setPage] = useState(1);
   const [expandedSong, setExpandedSong] = useState(null);
   const [volume, setVolume] = useState(50);
@@ -23,12 +20,6 @@ function TableView({ lang, seed, likes, songs, setSongs }) {
       );
       const data = await res.json();
       setSongs(data);
-
-      data.forEach((song, idx) => {
-        generateCover(song, idx, seed).then((src) => {
-          setCovers((prev) => ({ ...prev, [song.index]: src }));
-        });
-      });
     };
     fetchSongs();
   }, [page, lang, seed, likes, setSongs]);
@@ -36,9 +27,8 @@ function TableView({ lang, seed, likes, songs, setSongs }) {
   const handleVolumeChange = (e) => {
     const newVolume = e.target.value;
     setVolume(newVolume);
-    import("tone").then((Tone) => {
-      Tone.Destination.volume.value = Tone.gainToDb(e.target.value / 100);
-    });
+    const audioElems = document.querySelectorAll("audio");
+    audioElems.forEach((a) => (a.volume = newVolume / 100));
   };
 
   return (
@@ -73,74 +63,75 @@ function TableView({ lang, seed, likes, songs, setSongs }) {
               </tr>
 
               {expandedSong === song.index && (
-  <tr>
-    <td colSpan="6">
-      <div className="card mb-3 shadow-sm">
-        <div className="row g-0">
-          <div className="col-md-3 d-flex align-items-center justify-content-center">
-            {covers[song.index] ? (
-              <img
-                src={covers[song.index]}
-                alt="Album cover"
-                className="img-fluid rounded"
-              />
-            ) : (
-              <p>Loading cover...</p>
-            )}
-          </div>
-          <div className="col-md-9">
-            <div className="card-body">
-              <h5 className="card-title">{song.title}</h5>
-              <p className="card-text"><b>Artist:</b> {song.artist}</p>
-              <p className="card-text"><b>Album:</b> {song.album}</p>
-              <p className="card-text"><b>Genre:</b> {song.genre}</p>
-              <p className="card-text"><b>Likes:</b> {song.likes}</p>
-              {song.duration && (
-                <p className="card-text">
-                  <b>Duration:</b>{" "}
-                  {Math.floor(song.duration / 60)}:
-                  {String(song.duration % 60).padStart(2, "0")}
-                </p>
-              )}
-              {song.review && (
-                <p className="card-text">
-                  <b>Review:</b> {song.review}
-                </p>
-              )}
-              <button
-                className="btn btn-primary mb-2"
-                onClick={() => {
-                  import("tone").then((Tone) => Tone.start());
-                  playSong(song.notes);
-                }}
-              >
-                <i className="fa-solid fa-play"></i> Play
-              </button>
-              <div className="mb-2">
-                <label
-                  htmlFor={`volume-${song.index}`}
-                  className="form-label"
-                >
-                  <i className="fa-solid fa-volume-high"></i> Volume
-                </label>
-                <input
-                  type="range"
-                  className="form-range w-50"
-                  id={`volume-${song.index}`}
-                  min="0"
-                  max="100"
-                  value={volume}
-                  onChange={handleVolumeChange}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </td>
-  </tr>
-)}
+                <tr>
+                  <td colSpan="6">
+                    <div className="card mb-3 shadow-sm">
+                      <div className="row g-0">
+                        <div className="col-md-3 d-flex align-items-center justify-content-center">
+                          {song.coverImageBase64 ? (
+                            <img
+                              src={`data:image/png;base64,${song.coverImageBase64}`}
+                              alt="Album cover"
+                              className="img-fluid rounded"
+                            />
+                          ) : (
+                            <p>Loading cover...</p>
+                          )}
+                        </div>
+                        <div className="col-md-9">
+                          <div className="card-body">
+                            <h5 className="card-title">{song.title}</h5>
+                            <p className="card-text"><b>Artist:</b> {song.artist}</p>
+                            <p className="card-text"><b>Album:</b> {song.album}</p>
+                            <p className="card-text"><b>Genre:</b> {song.genre}</p>
+                            <p className="card-text"><b>Likes:</b> {song.likes}</p>
+                            {song.duration && (
+                              <p className="card-text">
+                                <b>Duration:</b>{" "}
+                                {Math.floor(song.duration / 60)}:
+                                {String(song.duration % 60).padStart(2, "0")}
+                              </p>
+                            )}
+                            {song.review && (
+                              <p className="card-text">
+                                <b>Review:</b> {song.review}
+                              </p>
+                            )}
 
+                            {song.audioPreview && song.audioPreview.length > 0 && (
+                              <audio
+                                controls
+                                src={`data:audio/wav;base64,${btoa(
+                                  String.fromCharCode(...song.audioPreview)
+                                )}`}
+                                style={{ width: "100%" }}
+                              />
+                            )}
+
+                            <div className="mb-2">
+                              <label
+                                htmlFor={`volume-${song.index}`}
+                                className="form-label"
+                              >
+                                <i className="fa-solid fa-volume-high"></i>                                  
+                                </label>
+                              <input
+                                type="range"
+                                className="form-range w-50"
+                                id={`volume-${song.index}`}
+                                min="0"
+                                max="100"
+                                value={volume}
+                                onChange={handleVolumeChange}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              )}
             </React.Fragment>
           ))}
         </tbody>

@@ -1,24 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { playSong, generateCover } from "./utils";
 import "@fortawesome/fontawesome-free/css/all.min.css"; // иконки Font Awesome
-
+import { getAudioSrc, getCoverSrc } from "./utils";
 const API_URL = process.env.REACT_APP_API_URL + "/songs";
 
 function GalleryView({ lang, seed, likes }) {
   const [songs, setSongs] = useState([]);
-  const [covers, setCovers] = useState({});
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [volume, setVolume] = useState(50);
 
   useEffect(() => {
     setSongs([]);
-    setCovers({});
     setPage(1);
     window.scrollTo(0, 0);
   }, [lang, seed, likes]);
 
-  // loading songs
+  // загрузка песен
   useEffect(() => {
     const fetchSongs = async () => {
       setLoading(true);
@@ -29,12 +26,6 @@ function GalleryView({ lang, seed, likes }) {
         if (!res.ok) throw new Error("Failed to fetch songs");
         const data = await res.json();
         setSongs((prev) => [...prev, ...data]);
-
-        data.forEach((song, idx) => {
-          generateCover(song, idx, seed).then((src) => {
-            setCovers((prev) => ({ ...prev, [song.index]: src }));
-          });
-        });
       } catch (err) {
         console.error(err);
       } finally {
@@ -44,7 +35,7 @@ function GalleryView({ lang, seed, likes }) {
     fetchSongs();
   }, [page, lang, seed, likes]);
 
-  // scrolling
+  // бесконечный скролл
   useEffect(() => {
     const handleScroll = () => {
       if (
@@ -59,13 +50,12 @@ function GalleryView({ lang, seed, likes }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [loading]);
 
-  // change volume
+  // изменение громкости
   const handleVolumeChange = (e) => {
     const newVolume = e.target.value;
     setVolume(newVolume);
-    import("tone").then((Tone) => {
-      Tone.Destination.volume.value = Tone.gainToDb(e.target.value / 100);
-    });
+    const audioElems = document.querySelectorAll("audio");
+    audioElems.forEach((a) => (a.volume = newVolume / 100));
   };
 
   return (
@@ -81,16 +71,17 @@ function GalleryView({ lang, seed, likes }) {
                 className="card-img-top d-flex justify-content-center align-items-center"
                 style={{ height: "180px" }}
               >
-                {covers[song.index] ? (
-                  <img
-                    src={covers[song.index]}
-                    alt="Album cover"
-                    className="img-fluid rounded"
-                    style={{ maxHeight: "160px" }}
-                  />
-                ) : (
-                  <span>Loading cover...</span>
-                )}
+                {getCoverSrc(song) ? (
+  <img
+    src={getCoverSrc(song)}
+    alt="Album cover"
+    className="img-fluid rounded"
+    style={{ maxHeight: "160px" }}
+  />
+) : (
+  <span>Loading cover...</span>
+)}
+
               </div>
               <div className="card-body">
                 <h5 className="card-title">{song.title}</h5>
@@ -106,15 +97,14 @@ function GalleryView({ lang, seed, likes }) {
                   </p>
                 )}
 
-                <button
-                  className="btn btn-primary w-100 mb-2"
-                  onClick={() => {
-                    import("tone").then((Tone) => Tone.start());
-                   playSong(song.notes);
-                  }}
-                >
-                  <i className="fa-solid fa-play"></i> Play
-                </button>
+                {getAudioSrc(song) && (
+  <audio
+    controls
+    src={getAudioSrc(song)}
+    style={{ width: "100%" }}
+  />
+)}
+
 
                 <div className="mb-2">
                   <label htmlFor={`volume-${song.index}`} className="form-label">
