@@ -2,11 +2,8 @@ import React, { useState } from "react";
 import Toolbar from "./Toolbar";
 import TableView from "./TableView";
 import GalleryView from "./GalleryView";
-import 'bootstrap/dist/css/bootstrap.min.css';
-<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-/>
+import "bootstrap/dist/css/bootstrap.min.css";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
 function App() {
   const [viewMode, setViewMode] = useState("table");
@@ -14,9 +11,12 @@ function App() {
   const [seed, setSeed] = useState(12345);
   const [likes, setLikes] = useState(3.7);
   const [songs, setSongs] = useState([]);
+
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>🎵 Music Store Showcase</h1>
+    <div className="container py-4">
+      <h1 className="mb-4">
+        <i className="fa-solid fa-music"></i> Music Store Showcase
+      </h1>
 
       {/* Панель управления */}
       <Toolbar
@@ -30,15 +30,39 @@ function App() {
       />
 
       {/* Переключение режимов */}
-      <div style={{ marginBottom: "20px" }}>
-        <button onClick={() => setViewMode("table")}>Table View</button>
-        <button onClick={() => setViewMode("gallery")}>Gallery View</button>
+      <div className="d-flex gap-3 mb-4">
+        <button
+          className={`btn ${viewMode === "table" ? "btn-primary" : "btn-outline-primary"}`}
+          onClick={() => setViewMode("table")}
+        >
+          <i className="fa-solid fa-table"></i>
+        </button>
+        <button
+          className={`btn ${viewMode === "gallery" ? "btn-primary" : "btn-outline-primary"}`}
+          onClick={() => setViewMode("gallery")}
+        >
+          <i className="fa-solid fa-th"></i>
+        </button>
       </div>
 
       {viewMode === "table" ? (
-        <TableView key={`table-${seed}`} lang={lang} seed={seed} likes={likes} songs={songs} setSongs={setSongs}/>
+        <TableView
+          key={`table-${seed}`}
+          lang={lang}
+          seed={seed}
+          likes={likes}
+          songs={songs}
+          setSongs={setSongs}
+        />
       ) : (
-        <GalleryView key={`gallery-${seed}`} lang={lang} seed={seed} likes={likes} songs={songs} setSongs={setSongs}/>
+        <GalleryView
+          key={`gallery-${seed}`}
+          lang={lang}
+          seed={seed}
+          likes={likes}
+          songs={songs}
+          setSongs={setSongs}
+        />
       )}
     </div>
   );

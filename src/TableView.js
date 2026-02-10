@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { playSong, generateReview, generateCover } from "./utils";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+
+const API_URL = process.env.REACT_APP_API_URL + "/songs";
 
 function TableView({ lang, seed, likes, songs, setSongs }) {
   const [covers, setCovers] = useState({});
   const [page, setPage] = useState(1);
   const [expandedSong, setExpandedSong] = useState(null);
-
-  const API_URL = process.env.REACT_APP_API_URL + "/songs";
+  const [volume, setVolume] = useState(50);
 
   useEffect(() => {
     setPage(1);
@@ -28,7 +31,15 @@ function TableView({ lang, seed, likes, songs, setSongs }) {
       });
     };
     fetchSongs();
-  }, [page, lang, seed, likes, setSongs, API_URL]);
+  }, [page, lang, seed, likes, setSongs]);
+
+  const handleVolumeChange = (e) => {
+    const newVolume = e.target.value;
+    setVolume(newVolume);
+    import("tone").then((Tone) => {
+      Tone.Destination.volume.value = (newVolume - 50) / 10;
+    });
+  };
 
   return (
     <div className="container mt-4">
@@ -36,7 +47,7 @@ function TableView({ lang, seed, likes, songs, setSongs }) {
         <thead className="table-dark">
           <tr>
             <th>#</th>
-            <th>Title</th>
+            <th>Song</th>
             <th>Artist</th>
             <th>Album</th>
             <th>Genre</th>
@@ -84,15 +95,39 @@ function TableView({ lang, seed, likes, songs, setSongs }) {
                             <p className="card-text"><b>Album:</b> {song.album}</p>
                             <p className="card-text"><b>Genre:</b> {song.genre}</p>
                             <p className="card-text"><b>Likes:</b> {song.likes}</p>
+                            {song.duration && (
+                              <p className="card-text">
+                                <b>Duration:</b>{" "}
+                                {Math.floor(song.duration / 60)}:
+                                {String(song.duration % 60).padStart(2, "0")}
+                              </p>
+                            )}
                             <button
-                              className="btn btn-primary"
+                              className="btn btn-primary mb-2"
                               onClick={() => {
                                 import("tone").then((Tone) => Tone.start());
                                 playSong(seed, song.index);
                               }}
                             >
-                              ▶️ Play
+                              <i className="fa-solid fa-play"></i> Play
                             </button>
+                            <div className="mb-2">
+                              <label
+                                htmlFor={`volume-${song.index}`}
+                                className="form-label"
+                              >
+                                <i className="fa-solid fa-volume-high"></i> Volume
+                              </label>
+                              <input
+                                type="range"
+                                className="form-range"
+                                id={`volume-${song.index}`}
+                                min="0"
+                                max="100"
+                                value={volume}
+                                onChange={handleVolumeChange}
+                              />
+                            </div>
                             <p className="card-text mt-2 fst-italic">
                               {generateReview()}
                             </p>
@@ -113,14 +148,14 @@ function TableView({ lang, seed, likes, songs, setSongs }) {
           className="btn btn-outline-secondary"
           onClick={() => setPage((p) => Math.max(1, p - 1))}
         >
-          Prev
+          <i className="fa-solid fa-arrow-left"></i> Prev
         </button>
         <span>Page {page}</span>
         <button
           className="btn btn-outline-secondary"
           onClick={() => setPage((p) => p + 1)}
         >
-          Next
+          Next <i className="fa-solid fa-arrow-right"></i>
         </button>
       </div>
     </div>
