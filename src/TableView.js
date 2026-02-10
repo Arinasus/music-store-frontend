@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { getAudioSrc, getCoverSrc } from "./utils";
-
 import "bootstrap/dist/css/bootstrap.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import { getAudioSrc, getCoverSrc } from "./utils"; // используем утилиты
+
 const API_URL = process.env.REACT_APP_API_URL + "/songs";
 
 function TableView({ lang, seed, likes, songs, setSongs }) {
@@ -70,9 +70,9 @@ function TableView({ lang, seed, likes, songs, setSongs }) {
                     <div className="card mb-3 shadow-sm">
                       <div className="row g-0">
                         <div className="col-md-3 d-flex align-items-center justify-content-center">
-                          {song.coverImageBase64 ? (
+                          {getCoverSrc(song) ? (
                             <img
-                              src={`data:image/png;base64,${song.coverImageBase64}`}
+                              src={getCoverSrc(song)}
                               alt="Album cover"
                               className="img-fluid rounded"
                             />
@@ -101,24 +101,30 @@ function TableView({ lang, seed, likes, songs, setSongs }) {
                             )}
 
                             {getAudioSrc(song) && (
-                              <audio controls src={getAudioSrc(song)} style={{ width: "100%" }} />
+                              <audio
+                                controls
+                                src={getAudioSrc(song)}
+                                style={{ width: "100%" }}
+                              />
                             )}
 
                             <div className="mb-2">
-  <label htmlFor={`volume-${song.index}`} className="form-label">
-    <i className="fa-solid fa-volume-high"></i> Volume
-  </label>
-  <input
-    type="range"
-    className="form-range w-50"
-    id={`volume-${song.index}`}
-    min="0"
-    max="100"
-    value={volume}
-    onChange={handleVolumeChange}
-  />
-</div>
-
+                              <label
+                                htmlFor={`volume-${song.index}`}
+                                className="form-label"
+                              >
+                                <i className="fa-solid fa-volume-high"></i> Volume
+                              </label>
+                              <input
+                                type="range"
+                                className="form-range w-50"
+                                id={`volume-${song.index}`}
+                                min="0"
+                                max="100"
+                                value={volume}
+                                onChange={handleVolumeChange}
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
