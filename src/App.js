@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Toolbar from "./Toolbar";
 import TableView from "./TableView";
 import GalleryView from "./GalleryView";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   const [viewMode, setViewMode] = useState("table");

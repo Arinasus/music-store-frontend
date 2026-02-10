@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { playSong, generateReview, generateCover } from "./utils";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 function TableView({ lang, seed, likes, songs, setSongs }) {
   const [covers, setCovers] = useState({});

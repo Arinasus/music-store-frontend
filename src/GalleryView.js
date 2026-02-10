@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { playSong, generateReview, generateCover } from "./utils";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 function GalleryView({ lang, seed, likes }) {
   const [songs, setSongs] = useState([]);
