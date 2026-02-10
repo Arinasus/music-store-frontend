@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { playSong, generateReview, generateCover} from "./utils";
+import { playSong, generateReview, generateCover } from "./utils";
+import "./TableView.css";
 
 function TableView({ lang, seed, likes, songs, setSongs }) {
   const [covers, setCovers] = useState({});
   const [page, setPage] = useState(1);
-  const [expandedSong, setExpandedSong] = useState(null);
+  const [selectedSong, setSelectedSong] = useState(null);
 
   const API_URL = process.env.REACT_APP_API_URL + "/songs";
-    useEffect(() => { 
-        setPage(1); // всегда возвращаемся на первую страницу 
-        setExpandedSong(null); // закрываем раскрытые строки 
-    }, [lang, seed, likes]);
+
+  useEffect(() => {
+    setPage(1);
+    setSelectedSong(null);
+  }, [lang, seed, likes]);
 
   useEffect(() => {
     const fetchSongs = async () => {
@@ -20,7 +22,6 @@ function TableView({ lang, seed, likes, songs, setSongs }) {
       const data = await res.json();
       setSongs(data);
 
-      // генерируем обложки асинхронно
       data.forEach((song, idx) => {
         generateCover(song, idx, seed).then((src) => {
           setCovers((prev) => ({ ...prev, [song.index]: src }));
@@ -31,8 +32,9 @@ function TableView({ lang, seed, likes, songs, setSongs }) {
   }, [page, lang, seed, likes, setSongs, API_URL]);
 
   return (
-    <>
-      <table border="1" cellPadding="5" style={{ width: "100%" }}>
+    <div className="table-view">
+      {/* Таблица песен */}
+      <table className="song-table">
         <thead>
           <tr>
             <th>#</th>
@@ -45,78 +47,63 @@ function TableView({ lang, seed, likes, songs, setSongs }) {
         </thead>
         <tbody>
           {songs.map((song, idx) => (
-            <React.Fragment key={`table-${song.index}-${page}-${seed}-${idx}`}>
-              <tr
-                onClick={() =>
-                  setExpandedSong(expandedSong === song.index ? null : song.index)
-                }
-                style={{ cursor: "pointer" }}
-              >
-                <td>{song.index}</td>
-                <td>{song.title}</td>
-                <td>{song.artist}</td>
-                <td>{song.album}</td>
-                <td>{song.genre}</td>
-                <td>{song.likes}</td>
-              </tr>
-
-              {expandedSong === song.index && (
-                <tr>
-                  <td colSpan="6">
-                    <div
-                      style={{
-                        border: "1px solid #ccc",
-                        padding: "10px",
-                        width: "220px",
-                        background: "#f9f9f9",
-                      }}
-                    >
-                      {/* Обложка */}
-                      <div style={{ display: "flex", gap: "10px" }}>
-                        {covers[song.index] ? (
-                          <img
-                            src={covers[song.index]}
-                            alt="Album cover"
-                            style={{ borderRadius: "8px" }}
-                          />
-                        ) : (
-                          <p>Loading cover...</p>
-                        )}
-                      </div>
-
-                      <div>
-                        <h3>{song.title}</h3>
-                        <p><b>Artist:</b> {song.artist}</p>
-                        <p><b>Album:</b> {song.album}</p>
-                        <p><b>Genre:</b> {song.genre}</p>
-                        <p><b>Likes:</b> {song.likes}</p>
-                        <button
-                          onClick={() => {
-                            import("tone").then((Tone) => Tone.start());
-                            playSong(seed, song.index);
-                          }}
-                        >
-                          ▶️ Play
-                        </button>
-                        <p style={{ fontStyle: "italic", marginTop: "10px" }}>
-                          {generateReview()}
-                        </p>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              )}
-            </React.Fragment>
+            <tr
+              key={`table-${song.index}-${page}-${seed}-${idx}`}
+              onClick={() => setSelectedSong(song)}
+              style={{ cursor: "pointer" }}
+            >
+              <td>{song.index}</td>
+              <td>{song.title}</td>
+              <td>{song.artist}</td>
+              <td>{song.album}</td>
+              <td>{song.genre}</td>
+              <td>{song.likes}</td>
+            </tr>
           ))}
         </tbody>
       </table>
 
-      <div style={{ marginTop: "20px" }}>
+      {/* Пагинация */}
+      <div className="pagination">
         <button onClick={() => setPage((p) => Math.max(1, p - 1))}>Prev</button>
-        <span style={{ margin: "0 10px" }}>Page {page}</span>
+        <span>Page {page}</span>
         <button onClick={() => setPage((p) => p + 1)}>Next</button>
       </div>
-    </>
+
+      {/* Блок выбранной песни снизу */}
+      {selectedSong && (
+        <div className="song-details">
+          <div className="cover">
+            {covers[selectedSong.index] ? (
+              <img
+                src={covers[selectedSong.index]}
+                alt="Album cover"
+                style={{ borderRadius: "8px" }}
+              />
+            ) : (
+              <p>Loading cover...</p>
+            )}
+          </div>
+          <div className="info">
+            <h3>{selectedSong.title}</h3>
+            <p><b>Artist:</b> {selectedSong.artist}</p>
+            <p><b>Album:</b> {selectedSong.album}</p>
+            <p><b>Genre:</b> {selectedSong.genre}</p>
+            <p><b>Likes:</b> {selectedSong.likes}</p>
+            <button
+              className="play-btn"
+              onClick={() => {
+                import("tone").then((Tone) => Tone.start());
+                playSong(seed, selectedSong.index);
+              }}
+            >
+              ▶️ Play
+            </button>
+            <p className="review">{generateReview()}</p>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
