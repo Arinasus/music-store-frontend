@@ -73,68 +73,74 @@ function TableView({ lang, seed, likes, songs, setSongs }) {
               </tr>
 
               {expandedSong === song.index && (
-                <tr>
-                  <td colSpan="6">
-                    <div className="card mb-3 shadow-sm">
-                      <div className="row g-0">
-                        <div className="col-md-3 d-flex align-items-center justify-content-center">
-                          {covers[song.index] ? (
-                            <img
-                              src={covers[song.index]}
-                              alt="Album cover"
-                              className="img-fluid rounded"
-                            />
-                          ) : (
-                            <p>Loading cover...</p>
-                          )}
-                        </div>
-                        <div className="col-md-9">
-                          <div className="card-body">
-                            <h5 className="card-title">{song.title}</h5>
-                            <p className="card-text"><b>Artist:</b> {song.artist}</p>
-                            <p className="card-text"><b>Album:</b> {song.album}</p>
-                            <p className="card-text"><b>Genre:</b> {song.genre}</p>
-                            <p className="card-text"><b>Likes:</b> {song.likes}</p>
-                            {song.duration && (
-                              <p className="card-text">
-                                <b>Duration:</b>{" "}
-                                {Math.floor(song.duration / 60)}:
-                                {String(song.duration % 60).padStart(2, "0")}
-                              </p>
-                            )}
-                            <button
-                              className="btn btn-primary mb-2"
-                              onClick={() => {
-                                import("tone").then((Tone) => Tone.start());
-                                playSong(song.notes);
-                              }}
-                            >
-                              <i className="fa-solid fa-play"></i> Play
-                            </button>
-                            <div className="mb-2">
-                              <label
-                                htmlFor={`volume-${song.index}`}
-                                className="form-label"
-                              >
-                                <i className="fa-solid fa-volume-high"></i> Volume
-                              </label>
-                              <input
-                                type="range"
-                                className="form-range w-50"
-                                id={`volume-${song.index}`}
-                                min="0"
-                                max="100"
-                                value={volume}
-                                onChange={handleVolumeChange}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
+  <tr>
+    <td colSpan="6">
+      <div className="card mb-3 shadow-sm">
+        <div className="row g-0">
+          <div className="col-md-3 d-flex align-items-center justify-content-center">
+            {covers[song.index] ? (
+              <img
+                src={covers[song.index]}
+                alt="Album cover"
+                className="img-fluid rounded"
+              />
+            ) : (
+              <p>Loading cover...</p>
+            )}
+          </div>
+          <div className="col-md-9">
+            <div className="card-body">
+              <h5 className="card-title">{song.title}</h5>
+              <p className="card-text"><b>Artist:</b> {song.artist}</p>
+              <p className="card-text"><b>Album:</b> {song.album}</p>
+              <p className="card-text"><b>Genre:</b> {song.genre}</p>
+              <p className="card-text"><b>Likes:</b> {song.likes}</p>
+              {song.duration && (
+                <p className="card-text">
+                  <b>Duration:</b>{" "}
+                  {Math.floor(song.duration / 60)}:
+                  {String(song.duration % 60).padStart(2, "0")}
+                </p>
               )}
+              {song.review && (
+                <p className="card-text">
+                  <b>Review:</b> {song.review}
+                </p>
+              )}
+              <button
+                className="btn btn-primary mb-2"
+                onClick={() => {
+                  import("tone").then((Tone) => Tone.start());
+                  playSong(song.notes);
+                }}
+              >
+                <i className="fa-solid fa-play"></i> Play
+              </button>
+              <div className="mb-2">
+                <label
+                  htmlFor={`volume-${song.index}`}
+                  className="form-label"
+                >
+                  <i className="fa-solid fa-volume-high"></i> Volume
+                </label>
+                <input
+                  type="range"
+                  className="form-range w-50"
+                  id={`volume-${song.index}`}
+                  min="0"
+                  max="100"
+                  value={volume}
+                  onChange={handleVolumeChange}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </td>
+  </tr>
+)}
+
             </React.Fragment>
           ))}
         </tbody>
