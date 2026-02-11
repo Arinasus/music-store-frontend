@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import { getAudioSrc} from "./utils"; // используем утилиты
-
 const API_URL = process.env.REACT_APP_API_URL + "/songs";
 
 function TableView({ lang, seed, likes, songs, setSongs }) {
@@ -110,9 +108,12 @@ setSongs((prevSongs) => prevSongs.map((s) => s.index === songId ? { ...s, coverI
                               </p>
                             )}
 
-                            {getAudioSrc(song) && (
-                              <audio controls src={getAudioSrc(song)} style={{ width: "100%" }} />
-                            )}
+                            <audio
+  controls
+  src={`${API_URL}/${song.index}/audio`}
+  style={{ width: "100%" }}
+/>
+
                           </div>
                         </div>
                       </div>

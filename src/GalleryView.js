@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import { getAudioSrc } from "./utils";
-
 const API_URL = process.env.REACT_APP_API_URL + "/songs";
 
 function GalleryView({ lang, seed, likes }) {
@@ -129,13 +127,12 @@ function GalleryView({ lang, seed, likes }) {
                   </p>
                 )}
 
-                {getAudioSrc(song) && (
-                  <audio
-                    controls
-                    src={getAudioSrc(song)}
-                    style={{ width: "100%" }}
-                  />
-                )}
+                <audio
+  controls
+  src={`${API_URL}/${song.index}/audio`}
+  style={{ width: "100%" }}
+/>
+
               </div>
             </div>
           </div>
