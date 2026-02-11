@@ -9,7 +9,7 @@ function GalleryView({ lang, seed, likes }) {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
 
-  // сбрасываем список при смене параметров
+  // сброс при смене параметров
   useEffect(() => {
     setSongs([]);
     setPage(1);
@@ -40,6 +40,30 @@ function GalleryView({ lang, seed, likes }) {
     fetchSongs();
   }, [page, lang, seed, likes]);
 
+  // 🔥 автоматическая загрузка обложек по порядку
+  useEffect(() => {
+    const loadCoversSequentially = async () => {
+      for (const song of songs) {
+        if (!song.coverImageUrl) {
+          try {
+            const res = await fetch(`${API_URL}/${song.index}/cover`);
+            const data = await res.json();
+
+            setSongs((prev) =>
+              prev.map((s) =>
+                s.index === song.index ? { ...s, coverImageUrl: data.cover } : s
+              )
+            );
+          } catch (err) {
+            console.error("Cover load failed", err);
+          }
+        }
+      }
+    };
+
+    loadCoversSequentially();
+  }, [songs]);
+
   // бесконечный скролл
   useEffect(() => {
     const handleScroll = () => {
@@ -59,7 +83,6 @@ function GalleryView({ lang, seed, likes }) {
   return (
     <div className="container mt-4">
 
-      {/* Индикатор загрузки при первой загрузке */}
       {loading && page === 1 && (
         <div className="text-center mb-3">
           <div className="spinner-border text-primary" role="status">
@@ -79,9 +102,9 @@ function GalleryView({ lang, seed, likes }) {
                 className="card-img-top d-flex justify-content-center align-items-center"
                 style={{ height: "180px" }}
               >
-                {getCoverSrc(song) ? (
+                {song.coverImageUrl ? (
                   <img
-                    src={getCoverSrc(song)}
+                    src={song.coverImageUrl}
                     alt="Album cover"
                     className="img-fluid rounded"
                     style={{ maxHeight: "160px" }}
@@ -119,7 +142,6 @@ function GalleryView({ lang, seed, likes }) {
         ))}
       </div>
 
-      {/* Индикатор загрузки при догрузке страниц */}
       {loading && page > 1 && (
         <div className="text-center mt-3 mb-5">
           <div className="spinner-border text-primary" role="status">
