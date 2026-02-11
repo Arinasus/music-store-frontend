@@ -8,27 +8,37 @@ const API_URL = process.env.REACT_APP_API_URL + "/songs";
 function TableView({ lang, seed, likes, songs, setSongs }) {
   const [page, setPage] = useState(1);
   const [expandedSong, setExpandedSong] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setPage(1);
-    setExpandedSong(null);
-  }, [lang, seed, likes]);
+  const fetchSongs = async () => {
+    setLoading(true); // ← показываем индикатор
 
-  useEffect(() => {
-    const fetchSongs = async () => {
+    try {
       const res = await fetch(
         `${API_URL}?page=${page}&lang=${lang}&seed=${seed}&likes=${likes}&count=10`
       );
       const data = await res.json();
       setSongs(data);
-    };
-    fetchSongs();
-  }, [page, lang, seed, likes, setSongs]);
+    } finally {
+      setLoading(false); // ← скрываем индикатор
+    }
+  };
+
+  fetchSongs();
+}, [page, lang, seed, likes, setSongs]);
+
 const fetchCover = async (songId) => { 
   const res = await fetch(`${API_URL}/${songId}/cover`); const data = await res.json(); 
 setSongs((prevSongs) => prevSongs.map((s) => s.index === songId ? { ...s, coverImageUrl: data.cover } : s ) ); };
   return (
     <div className="container mt-4">
+      {loading && (
+  <div className="alert alert-info text-center">
+    Loading songs…
+  </div>
+)}
+
       <table className="table table-hover table-bordered">
         <thead className="table-dark">
           <tr>
