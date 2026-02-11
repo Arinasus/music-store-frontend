@@ -4,13 +4,14 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const API_URL = process.env.REACT_APP_API_URL + "/songs";
 
-function Toolbar({ lang, setLang, seed, setSeed, likes, setLikes, gallerySongs, page }) {
+function Toolbar({ lang, setLang, seed, setSeed, likes, setLikes, page, tableSongs, gallerySongs,  viewMode }) {
   const generateRandomSeed = () => {
     const randomSeed = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
     setSeed(randomSeed);
   };
 
-  const exportZip = async () => { let payload; 
+  const exportZip = async () => { 
+    let payload; 
   if (viewMode === "table"){ 
       payload = { 
         page, 
