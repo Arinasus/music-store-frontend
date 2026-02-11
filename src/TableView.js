@@ -72,7 +72,10 @@ setSongs((prevSongs) => prevSongs.map((s) => s.index === songId ? { ...s, coverI
                       <div className="row g-0">
                         <div className="col-md-3 d-flex align-items-center justify-content-center">
                           {song.coverImageUrl ? (
-                            <img src={song.coverImageUrl} alt="Album cover" className="img-fluid rounded" />
+                            <img src={song.coverImageUrl} 
+                            alt={`${song.title} cover`}
+                            className="img-fluid rounded" 
+                            />
                           ) : (
                             <p>Loading cover...</p>
                           )}
