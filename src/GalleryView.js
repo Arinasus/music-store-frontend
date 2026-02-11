@@ -8,7 +8,6 @@ function GalleryView({ lang, seed, likes }) {
   const [songs, setSongs] = useState([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [volume, setVolume] = useState(50);
 
   // сбрасываем список при смене параметров
   useEffect(() => {
@@ -57,20 +56,10 @@ function GalleryView({ lang, seed, likes }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [loading]);
 
-  // изменение громкости
-  const handleVolumeChange = (e) => {
-    const newVolume = e.target.value;
-    setVolume(newVolume);
-
-    document
-      .querySelectorAll("audio")
-      .forEach((a) => (a.volume = newVolume / 100));
-  };
-
   return (
     <div className="container mt-4">
 
-      {/* 🔵 Индикатор загрузки сверху — видно сразу */}
+      {/* Индикатор загрузки при первой загрузке */}
       {loading && page === 1 && (
         <div className="text-center mb-3">
           <div className="spinner-border text-primary" role="status">
@@ -124,28 +113,13 @@ function GalleryView({ lang, seed, likes }) {
                     style={{ width: "100%" }}
                   />
                 )}
-
-                <div className="mb-2">
-                  <label htmlFor={`volume-${song.index}`} className="form-label">
-                    <i className="fa-solid fa-volume-high"></i> Volume
-                  </label>
-                  <input
-                    type="range"
-                    className="form-range"
-                    id={`volume-${song.index}`}
-                    min="0"
-                    max="100"
-                    value={volume}
-                    onChange={handleVolumeChange}
-                  />
-                </div>
               </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* 🔵 Индикатор загрузки внизу — для бесконечного скролла */}
+      {/* Индикатор загрузки при догрузке страниц */}
       {loading && page > 1 && (
         <div className="text-center mt-3 mb-5">
           <div className="spinner-border text-primary" role="status">
