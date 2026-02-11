@@ -8,7 +8,6 @@ const API_URL = process.env.REACT_APP_API_URL + "/songs";
 function TableView({ lang, seed, likes, songs, setSongs }) {
   const [page, setPage] = useState(1);
   const [expandedSong, setExpandedSong] = useState(null);
-  const [volume, setVolume] = useState(50);
 
   useEffect(() => {
     setPage(1);
@@ -25,13 +24,6 @@ function TableView({ lang, seed, likes, songs, setSongs }) {
     };
     fetchSongs();
   }, [page, lang, seed, likes, setSongs]);
-
-  const handleVolumeChange = (e) => {
-    const newVolume = e.target.value;
-    setVolume(newVolume);
-    const audioElems = document.querySelectorAll("audio");
-    audioElems.forEach((a) => (a.volume = newVolume / 100));
-  };
 
   return (
     <div className="container mt-4">
@@ -107,24 +99,6 @@ function TableView({ lang, seed, likes, songs, setSongs }) {
                                 style={{ width: "100%" }}
                               />
                             )}
-
-                            <div className="mb-2">
-                              <label
-                                htmlFor={`volume-${song.index}`}
-                                className="form-label"
-                              >
-                                <i className="fa-solid fa-volume-high"></i> Volume
-                              </label>
-                              <input
-                                type="range"
-                                className="form-range w-50"
-                                id={`volume-${song.index}`}
-                                min="0"
-                                max="100"
-                                value={volume}
-                                onChange={handleVolumeChange}
-                              />
-                            </div>
                           </div>
                         </div>
                       </div>
