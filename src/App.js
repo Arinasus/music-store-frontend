@@ -26,7 +26,8 @@ function App() {
         setSeed={setSeed}
         likes={likes}
         setLikes={setLikes}
-        songs={songs}
+        gallerySongs={songs}
+        page={page} 
       />
 
       {/* Переключение режимов */}

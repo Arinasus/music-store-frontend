@@ -4,21 +4,20 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const API_URL = process.env.REACT_APP_API_URL + "/songs";
 
-function Toolbar({ lang, setLang, seed, setSeed, likes, setLikes }) {
+function Toolbar({ lang, setLang, seed, setSeed, likes, setLikes, gallerySongs, page }) {
   const generateRandomSeed = () => {
     const randomSeed = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
     setSeed(randomSeed);
   };
 
-  const exportZip = async () => {
-    // отправляем только параметры, сервер сам генерирует песни
-    const payload = {
-      page: 1,       // можно добавить управление страницей
-      lang,
-      seed,
-      likes,
-      count: 10
-    };
+  const exportZip = async () => { let payload; 
+    if (gallerySongs && gallerySongs.length > 0) { 
+      payload = { 
+        page: 1, lang, seed, likes, count: gallerySongs.length
+       }; 
+  } 
+    else { 
+    payload = { page,  lang, seed, likes, count: 10 }; }
 
     const res = await fetch(`${API_URL}/exportZip`, {
       method: "POST",
