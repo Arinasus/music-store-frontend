@@ -48,7 +48,6 @@ function App() {
 
       {viewMode === "table" ? (
         <TableView
-          key={`table-${seed}`}
           lang={lang}
           seed={seed}
           likes={likes}
@@ -59,7 +58,6 @@ function App() {
         />
       ) : (
         <GalleryView
-          key={`gallery-${seed}`}
           lang={lang}
           seed={seed}
           likes={likes}
