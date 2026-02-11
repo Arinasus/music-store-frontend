@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from "react";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+
 const API_URL = process.env.REACT_APP_API_URL + "/songs";
 
 function GalleryView({ lang, seed, likes, songs, setSongs, page, setPage }) {
   const [loading, setLoading] = useState(false);
 
+  // IMPORTANT: reset gallery when generation parameters change
   useEffect(() => {
     setSongs([]);
     setPage(1);
     window.scrollTo(0, 0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lang, seed, likes]);
+  }, [lang, seed, likes, setSongs, setPage]);
 
-  // загрузка песен
+  // IMPORTANT: load a new batch of songs
   useEffect(() => {
     const fetchSongs = async () => {
       setLoading(true);
@@ -34,11 +35,11 @@ function GalleryView({ lang, seed, likes, songs, setSongs, page, setPage }) {
     };
 
     fetchSongs();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, lang, seed, likes]);
+  }, [page, lang, seed, likes, setSongs]);
 
+  // IMPORTANT: lazy-load covers sequentially
   useEffect(() => {
-    const loadCoversSequentially = async () => {
+    const loadCovers = async () => {
       for (const song of songs) {
         if (!song.coverImageUrl) {
           try {
@@ -57,11 +58,10 @@ function GalleryView({ lang, seed, likes, songs, setSongs, page, setPage }) {
       }
     };
 
-    loadCoversSequentially();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [songs]);
+    loadCovers();
+  }, [songs, setSongs]);
 
-  // бесконечный скролл
+  // IMPORTANT: infinite scroll
   useEffect(() => {
     const handleScroll = () => {
       if (
@@ -75,29 +75,30 @@ function GalleryView({ lang, seed, likes, songs, setSongs, page, setPage }) {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading]);
+  }, [loading, setPage]);
 
   return (
     <div className="container mt-4">
 
+      {/* Initial loading spinner */}
       {loading && page === 1 && (
         <div className="text-center mb-3">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
+          <div className="spinner-border text-primary" role="status" />
         </div>
       )}
 
+      {/* Responsive card grid */}
       <div className="row g-4">
-        {songs.map((song, idx) => (
+        {songs.map((song) => (
           <div
-            className="col-sm-6 col-md-4 col-lg-3"
-            key={`gallery-${song.index}-${page}-${seed}-${idx}`}
+            className="col-12 col-sm-6 col-md-4 col-lg-3"
+            key={`gallery-${song.index}`}
           >
             <div className="card h-100 shadow-sm">
+
+              {/* Cover */}
               <div
-                className="card-img-top d-flex justify-content-center align-items-center"
+                className="card-img-top d-flex justify-content-center align-items-center bg-light"
                 style={{ height: "180px" }}
               >
                 {song.coverImageUrl ? (
@@ -112,6 +113,7 @@ function GalleryView({ lang, seed, likes, songs, setSongs, page, setPage }) {
                 )}
               </div>
 
+              {/* Metadata */}
               <div className="card-body">
                 <h5 className="card-title">{song.title}</h5>
                 <p className="card-text"><b>Artist:</b> {song.artist}</p>
@@ -127,23 +129,22 @@ function GalleryView({ lang, seed, likes, songs, setSongs, page, setPage }) {
                   </p>
                 )}
 
+                {/* Audio preview */}
                 <audio
-  controls
-  src={`${API_URL}/${song.index}/audio`}
-  style={{ width: "100%" }}
-/>
-
+                  controls
+                  src={`${API_URL}/${song.index}/audio`}
+                  style={{ width: "100%" }}
+                />
               </div>
             </div>
           </div>
         ))}
       </div>
 
+      {/* Loading more spinner */}
       {loading && page > 1 && (
         <div className="text-center mt-3 mb-5">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading more...</span>
-          </div>
+          <div className="spinner-border text-primary" role="status" />
         </div>
       )}
     </div>
