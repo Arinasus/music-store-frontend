@@ -24,7 +24,9 @@ function TableView({ lang, seed, likes, songs, setSongs }) {
     };
     fetchSongs();
   }, [page, lang, seed, likes, setSongs]);
-
+const fetchCover = async (songId) => { 
+  const res = await fetch(`${API_URL}/${songId}/cover`); const data = await res.json(); 
+setSongs((prevSongs) => prevSongs.map((s) => s.index === songId ? { ...s, coverImageUrl: data.cover } : s ) ); };
   return (
     <div className="container mt-4">
       <table className="table table-hover table-bordered">
@@ -42,9 +44,16 @@ function TableView({ lang, seed, likes, songs, setSongs }) {
           {songs.map((song, idx) => (
             <React.Fragment key={`table-${song.index}-${page}-${seed}-${idx}`}>
               <tr
-                onClick={() =>
-                  setExpandedSong(expandedSong === song.index ? null : song.index)
-                }
+                onClick={() => {
+                  const newExpanded =
+                    expandedSong === song.index ? null : song.index;
+                  setExpandedSong(newExpanded);
+
+                  // если раскрываем и обложки ещё нет → грузим
+                  if (newExpanded && !song.coverImageUrl) {
+                    fetchCover(song.index);
+                  }
+                }}
                 className={expandedSong === song.index ? "table-active" : ""}
                 style={{ cursor: "pointer" }}
               >
@@ -62,12 +71,8 @@ function TableView({ lang, seed, likes, songs, setSongs }) {
                     <div className="card mb-3 shadow-sm">
                       <div className="row g-0">
                         <div className="col-md-3 d-flex align-items-center justify-content-center">
-                          {getCoverSrc(song) ? (
-                            <img
-                              src={getCoverSrc(song)}
-                              alt="Album cover"
-                              className="img-fluid rounded"
-                            />
+                          {song.coverImageUrl ? (
+                            <img src={song.coverImageUrl} alt="Album cover" className="img-fluid rounded" />
                           ) : (
                             <p>Loading cover...</p>
                           )}
@@ -93,11 +98,7 @@ function TableView({ lang, seed, likes, songs, setSongs }) {
                             )}
 
                             {getAudioSrc(song) && (
-                              <audio
-                                controls
-                                src={getAudioSrc(song)}
-                                style={{ width: "100%" }}
-                              />
+                              <audio controls src={getAudioSrc(song)} style={{ width: "100%" }} />
                             )}
                           </div>
                         </div>
