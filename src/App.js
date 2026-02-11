@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import Toolbar from "./Toolbar";
 import TableView from "./TableView";
 import GalleryView from "./GalleryView";
@@ -11,7 +11,7 @@ function App() {
   const [seed, setSeed] = useState(12345);
   const [likes, setLikes] = useState(3.7);
   const [songs, setSongs] = useState([]);
-
+  const [page, setPage] = useState(1);
   return (
     <div className="container py-4">
       <h1 className="mb-4">
@@ -53,6 +53,7 @@ function App() {
           seed={seed}
           likes={likes}
           songs={songs}
+          page={page}
           setSongs={setSongs}
         />
       ) : (
@@ -63,6 +64,7 @@ function App() {
           likes={likes}
           songs={songs}
           setSongs={setSongs}
+          setPage={setPage}
         />
       )}
     </div>
