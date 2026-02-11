@@ -52,9 +52,9 @@ function Toolbar({ lang, setLang, seed, setSeed, likes, setLikes }) {
   value={lang}
   onChange={(e) => setLang(e.target.value)}
 >
-  <option value="en_US">English (USA)</option>
-  <option value="de_DE">Deutsch (Germany)</option>
-  <option value="uk_UA">Українська (Ukraine)</option>
+  <option value="en">English (USA)</option>
+  <option value="de">Deutsch (Germany)</option>
+  <option value="uk">Українська (Ukraine)</option>
 </select>
       </div>
 
