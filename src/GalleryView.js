@@ -5,11 +5,11 @@ const API_URL = process.env.REACT_APP_API_URL + "/songs";
 function GalleryView({ lang, seed, likes, songs, setSongs, page, setPage }) {
   const [loading, setLoading] = useState(false);
 
-  // сброс при смене параметров
   useEffect(() => {
     setSongs([]);
     setPage(1);
     window.scrollTo(0, 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lang, seed, likes]);
 
   // загрузка песен
@@ -34,9 +34,9 @@ function GalleryView({ lang, seed, likes, songs, setSongs, page, setPage }) {
     };
 
     fetchSongs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, lang, seed, likes]);
 
-  // 🔥 автоматическая загрузка обложек по порядку
   useEffect(() => {
     const loadCoversSequentially = async () => {
       for (const song of songs) {
@@ -58,6 +58,7 @@ function GalleryView({ lang, seed, likes, songs, setSongs, page, setPage }) {
     };
 
     loadCoversSequentially();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [songs]);
 
   // бесконечный скролл
@@ -74,6 +75,7 @@ function GalleryView({ lang, seed, likes, songs, setSongs, page, setPage }) {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
 
   return (
