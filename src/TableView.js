@@ -3,8 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 const API_URL = process.env.REACT_APP_API_URL + "/songs";
 
-function TableView({ lang, seed, likes, songs, setSongs }) {
-  const [page, setPage] = useState(1);
+function TableView({ lang, seed, likes, songs, setSongs, page, setPage  }) {
   const [expandedSong, setExpandedSong] = useState(null);
   const [loading, setLoading] = useState(false);
 

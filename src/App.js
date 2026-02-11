@@ -55,6 +55,7 @@ function App() {
           songs={songs}
           page={page}
           setSongs={setSongs}
+          setPage={setPage}
         />
       ) : (
         <GalleryView
@@ -64,6 +65,7 @@ function App() {
           likes={likes}
           songs={songs}
           setSongs={setSongs}
+          page={page}
           setPage={setPage}
         />
       )}

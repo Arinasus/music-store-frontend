@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 const API_URL = process.env.REACT_APP_API_URL + "/songs";
 
-function GalleryView({ lang, seed, likes }) {
-  const [songs, setSongs] = useState([]);
-  const [page, setPage] = useState(1);
+function GalleryView({ lang, seed, likes, songs, setSongs, page, setPage }) {
   const [loading, setLoading] = useState(false);
 
   // сброс при смене параметров
