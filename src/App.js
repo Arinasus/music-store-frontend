@@ -10,7 +10,8 @@ function App() {
   const [lang, setLang] = useState("en");
   const [seed, setSeed] = useState(12345);
   const [likes, setLikes] = useState(3.7);
-  const [songs, setSongs] = useState([]);
+  const [tableSongs, setTableSongs] = useState([]);
+  const [gallerySongs, setGallerySongs] = useState([]);
   const [page, setPage] = useState(1);
   return (
     <div className="container py-4">
@@ -26,8 +27,10 @@ function App() {
         setSeed={setSeed}
         likes={likes}
         setLikes={setLikes}
-        gallerySongs={songs}
-        page={page} 
+        page={page}
+        tableSongs={tableSongs} 
+        gallerySongs={gallerySongs}
+        viewMode={viewMode} 
       />
 
       {/* Переключение режимов */}
@@ -51,9 +54,9 @@ function App() {
           lang={lang}
           seed={seed}
           likes={likes}
-          songs={songs}
+          songs={tableSongs}
           page={page}
-          setSongs={setSongs}
+          setSongs={setTableSongs}
           setPage={setPage}
         />
       ) : (
@@ -61,8 +64,8 @@ function App() {
           lang={lang}
           seed={seed}
           likes={likes}
-          songs={songs}
-          setSongs={setSongs}
+          songs={gallerySongs}
+          setSongs={setGallerySongs}
           page={page}
           setPage={setPage}
         />

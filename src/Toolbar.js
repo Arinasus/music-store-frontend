@@ -11,13 +11,24 @@ function Toolbar({ lang, setLang, seed, setSeed, likes, setLikes, gallerySongs, 
   };
 
   const exportZip = async () => { let payload; 
-    if (gallerySongs && gallerySongs.length > 0) { 
+  if (viewMode === "table"){ 
       payload = { 
-        page: 1, lang, seed, likes, count: gallerySongs.length
+        page, 
+        lang, 
+        seed, 
+        likes, 
+        count: 10
        }; 
   } 
     else { 
-    payload = { page,  lang, seed, likes, count: 10 }; }
+    payload = { 
+      page : 1,  
+      lang, 
+      seed, 
+      likes, 
+      count: gallerySongs.length 
+    }; 
+    }
 
     const res = await fetch(`${API_URL}/exportZip`, {
       method: "POST",
